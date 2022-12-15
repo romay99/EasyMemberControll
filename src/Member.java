@@ -1,9 +1,9 @@
+import java.util.Objects;
 
 public class Member {
-    private int member_num;
+    private int member_num ;
     private String name;
     private String password;
-
 
 
     public int getMember_num() {
@@ -32,10 +32,10 @@ public class Member {
 
     @Override
     public String toString() {
-        return "Member{" +
-                "member_num=" + member_num +
+        return "member_num=" + member_num +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }
+
 }

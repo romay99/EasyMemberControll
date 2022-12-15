@@ -1,64 +1,65 @@
+import com.sun.jdi.CharValue;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
 
 public class MemberDAO {
-    private int user_num = 1;  // createMember() 메소드로 유저를 생성했을때만 ++ ;
-    Scanner sc = new Scanner(System.in);
-    ArrayList<Member> repository;
-
-    public MemberDAO() {
-        this.repository = Repository.getRepository();
+    private static MemberDAO daoinst = null;
+    ArrayList<Member> repository = Repository.getRepository();
+    private MemberDAO() {  // 생성자로 생성 막기
+    }
+    public static MemberDAO getDAO(){ // DAO 객체 전달해주는 메서드
+        if (daoinst == null) {
+            daoinst = new MemberDAO();
+            return daoinst;
+        }
+        return daoinst;
     }
 
-    public void createMember(){
-        Member member = new Member();
-        System.out.println("생성할 사용자의 이름을 적어주세요");
-        String name = sc.nextLine();
-        System.out.println("생성할 사용자의 비밀번호를 적어주세요.");
-        String password = sc.nextLine();
-
-        member.setName(name);
-        member.setPassword(password);
-        member.setMember_num(user_num);
-        user_num++;
+    public void createMember(Member member){
         repository.add(member);
     }
 
 
-    public void removeMember(){
-        System.out.println("삭제할 사용자의 이름을 적어주세요");
-        String name = sc.nextLine();
-        Member member=new Member();
+    public void removeMember(Member member){
+        Member m = member;
 
-        for (Member tmp : repository){
-            if (tmp.getName().equals(name)) {
-                member = tmp;
-            }
+        for (Member tmp : repository) {
+            if (member.getName().equals(tmp.getName()))
+                m = tmp;
         }
-            repository.remove(member);
+        repository.remove(m);
     }
 
-    public Member findByName(){
-        System.out.println("조회할 사용자의 이름을 적어주세요");
-        String name=sc.nextLine();
-        Member member = new Member();
-
-        for (Member tmp : repository){
-            if (tmp.getName().equals(name)) {
-                member=tmp;
+    public void findByName(Member member){
+        Member m = new Member();
+        boolean haveMember = true;
+        for (Member tmp : repository) {
+            if (member.getName().equals(tmp.getName())) {
+                haveMember = true;
+            }else{
+                haveMember = false;
             }
         }
-        return member;
+        if (!haveMember) {
+            System.out.println("존재하지 않는 사용자입니다.");
+        }
+
     }
 
-    public void findAllMembers(){
-        if (repository == null){
-            System.out.println("사용자가 존재하지 않습니다.");
+    public Member[] findAllMembers(){
+        Member[] members = null;
+        if (repository == null) {
+            return members;
         }else{
-            for(Member m : repository)
-                System.out.println(m);
+            members = new Member[repository.size()];
+            for (int i = 0; i < repository.size(); i++) {
+                members[i] = repository.get(i);
+            }
+            return members;
         }
+
     }
 
 }
